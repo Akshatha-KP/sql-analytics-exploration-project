@@ -1,0 +1,35 @@
+/*
+===============================================================================
+SQL Script: Create Database and Gold Layer Schemas
+===============================================================================
+Author       : Akshatha Kumble Prabhu
+Date         : 2025-12-11
+Environment  : SQL Server
+Description  : 
+    This script sets up the foundational database and Gold layer schemas 
+    for the Data Warehouse Analytics project. The script performs the following:
+        - Checks if the database 'DataWarehouseAnalytics' exists; if so, drops it
+        - Creates a new 'DataWarehouseAnalytics' database
+        - Creates the 'gold' schema
+        - Creates dimension tables: dim_customers, dim_products
+        - Creates fact table: fact_sales
+        - Loads data from CSV files into the Gold layer tables
+
+WARNING:
+    Running this script will drop the entire 'DataWarehouseAnalytics' database if it exists. 
+    All existing data will be permanently deleted. Ensure proper backups before execution.
+===============================================================================
+*/
+
+-- ======================================================
+-- Use master database to perform DB operations
+-- ======================================================
+USE master;
+GO
+
+-- ======================================================
+-- Drop and recreate the 'DataWarehouseAnalytics' database
+-- ======================================================
+IF EXISTS (SELECT 1 FROM sys.databases WHERE name = 'DataWarehouseAnalytics')
+BEGIN
+    -- Force singl
