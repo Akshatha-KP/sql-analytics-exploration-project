@@ -1,0 +1,91 @@
+/*
+===============================================================================
+SQL Script: Measures Exploration (Key Metrics)
+===============================================================================
+Author       : Akshatha Kumble Prabhu
+Date         : 2025-12-11
+Environment  : SQL Server / Gold Layer
+Description  : 
+    This script calculates key aggregated metrics for the business, including:
+        - Total sales, quantity, and average price
+        - Total number of orders
+        - Total number of products and customers
+        - Number of customers who have placed orders
+        - Generates a consolidated report of all key metrics
+
+SQL Functions Used:
+    - COUNT(): To count rows or distinct values
+    - SUM(): To calculate totals
+    - AVG(): To calculate average values
+
+Purpose:
+    Provides a quick snapshot of business performance and trends, 
+    useful for executive dashboards and analytical reporting.
+===============================================================================
+*/
+
+-- ======================================================
+-- Total Sales
+-- ======================================================
+SELECT SUM(sales_amount) AS total_sales 
+FROM gold.fact_sales;
+
+-- ======================================================
+-- Total quantity of items sold
+-- ======================================================
+SELECT SUM(quantity) AS total_quantity 
+FROM gold.fact_sales;
+
+-- ======================================================
+-- Average selling price
+-- ======================================================
+SELECT AVG(price) AS avg_price 
+FROM gold.fact_sales;
+
+-- ======================================================
+-- Total number of orders (including duplicates and distinct)
+-- ======================================================
+SELECT COUNT(order_number) AS total_orders 
+FROM gold.fact_sales;
+
+SELECT COUNT(DISTINCT order_number) AS total_orders 
+FROM gold.fact_sales;
+
+-- ======================================================
+-- Total number of products
+-- ======================================================
+SELECT COUNT(product_name) AS total_products 
+FROM gold.dim_products;
+
+-- ======================================================
+-- Total number of customers
+-- ======================================================
+SELECT COUNT(customer_key) AS total_customers 
+FROM gold.dim_customers;
+
+-- ======================================================
+-- Total number of customers who have placed an order
+-- ======================================================
+SELECT COUNT(DISTINCT customer_key) AS total_customers 
+FROM gold.fact_sales;
+
+-- ======================================================
+-- Consolidated report of all key metrics
+-- ======================================================
+SELECT 'Total Sales' AS measure_name, SUM(sales_amount) AS measure_value 
+FROM gold.fact_sales
+UNION ALL
+SELECT 'Total Quantity', SUM(quantity) 
+FROM gold.fact_sales
+UNION ALL
+SELECT 'Average Price', AVG(price) 
+FROM gold.fact_sales
+UNION ALL
+SELECT 'Total Orders', COUNT(DISTINCT order_number) 
+FROM gold.fact_sales
+UNION ALL
+SELECT 'Total Products', COUNT(DISTINCT product_name) 
+FROM gold.dim_products
+UNION ALL
+SELECT 'Total Customers', COUNT(customer_key) 
+FROM gold.dim_customers;
